@@ -1,0 +1,7 @@
+node_modules/
+.user-data/
+watch-later-*.json
+summary-*.md
+notebooks-created.log
+progress.json
+.DS_Store
