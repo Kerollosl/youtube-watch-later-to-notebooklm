@@ -20,12 +20,16 @@ const RESEARCH_PLAYLIST_NAME = 'Claude Research';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function parseArgs(argv) {
-    const args = { topic: null, max: 50 };
+    const args = { topic: null, max: 50, skipPlaylist: false };
     const rest = [];
     for (const a of argv.slice(2)) {
         const m = a.match(/^--max=(\d+)$/);
         if (m) {
             args.max = parseInt(m[1], 10);
+            continue;
+        }
+        if (a === '--skip-playlist') {
+            args.skipPlaylist = true;
             continue;
         }
         if (a === '--help' || a === '-h') {
@@ -50,8 +54,9 @@ async function main() {
     const args = parseArgs(process.argv);
 
     if (args.help || !args.topic) {
-        console.log('Usage: node topic.mjs "<topic>" [--max=N]');
-        console.log('  --max=N    Max videos in the notebook (default 50, NotebookLM cap)');
+        console.log('Usage: node topic.mjs "<topic>" [--max=N] [--skip-playlist]');
+        console.log('  --max=N         Max videos in the notebook (default 50, NotebookLM cap)');
+        console.log('  --skip-playlist Skip saving videos to YouTube playlist (faster, default: save)');
         process.exit(args.help ? 0 : 1);
     }
 
@@ -89,13 +94,16 @@ async function main() {
         });
 
         // Playlist save runs after NotebookLM so a YouTube DOM hiccup
-        // can't crash the primary artifact. Wrapped in try/catch as a final
-        // safety net — we already returned the notebook URL by this point.
+        // can't crash the primary artifact. Can be skipped with --skip-playlist.
         let playlistResult = { saved: 0, failed: 0, aborted: false };
-        try {
-            playlistResult = await addVideosToYouTubePlaylist(page, videos, RESEARCH_PLAYLIST_NAME);
-        } catch (err) {
-            console.log(`\n! Playlist step failed: ${err.message} (notebook is still created)`);
+        if (!args.skipPlaylist) {
+            try {
+                playlistResult = await addVideosToYouTubePlaylist(page, videos, RESEARCH_PLAYLIST_NAME);
+            } catch (err) {
+                console.log(`\n! Playlist step failed: ${err.message} (notebook is still created)`);
+            }
+        } else {
+            console.log('\n=== Skipping playlist save (--skip-playlist) ===');
         }
 
         console.log('\n=== Done ===');
