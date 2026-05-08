@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node pull.mjs",
+    "topic": "node topic.mjs",
     "postinstall": "playwright install chromium"
   },
   "dependencies": {

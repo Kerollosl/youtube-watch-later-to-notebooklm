@@ -1,6 +1,8 @@
 node_modules/
 .user-data/
+.env
 watch-later-*.json
+topic-*.json
 summary-*.md
 notebooks-created.log
 progress.json

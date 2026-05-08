@@ -1,8 +1,11 @@
 # youtube-watch-later-to-notebooklm
 
-Pull every video from your YouTube **Watch Later** playlist and load them into a fresh [NotebookLM](https://notebooklm.google.com/) notebook as YouTube sources. Auto-batches into multiple notebooks if you exceed NotebookLM's 50-source limit.
+Two ways to feed YouTube videos into a fresh [NotebookLM](https://notebooklm.google.com/) notebook:
 
-Useful when you've stockpiled hundreds of "I'll watch later" videos and want NotebookLM to summarize, search, and ask questions across all of them at once.
+1. **Watch Later → NotebookLM** (`npm start`) — scrape your YouTube Watch Later, load every video as a NotebookLM source.
+2. **Topic search → NotebookLM** (`npm run topic -- "<topic>"`) — search YouTube for a topic, pick the best ~50 videos, load them as NotebookLM sources. No YouTube playlist involved.
+
+Both auto-batch into multiple notebooks if you exceed NotebookLM's 50-source limit.
 
 ## What it does
 
@@ -33,6 +36,8 @@ npm install            # installs a local Chromium via Playwright
 
 ## Usage
 
+### Watch Later → NotebookLM
+
 ```bash
 npm start
 ```
@@ -40,6 +45,20 @@ npm start
 **First run:** A Chromium window opens. Sign in to your Google account. The script polls every 4 seconds and resumes automatically. Your session is saved in `.user-data/` (gitignored) for subsequent runs — no need to log in again.
 
 **Subsequent runs:** It detects you're already signed in and proceeds straight to scraping.
+
+### Topic search → NotebookLM
+
+```bash
+npm run topic -- "pidgeon migration patterns"
+npm run topic -- "rust async runtimes" --max=30
+```
+
+Scrapes YouTube search results in the same Playwright browser as `npm start`, filters out shorts and very-low-view junk, caps at 3 videos per channel, and:
+
+1. Saves the picked videos to a private YouTube playlist named **"Claude Research"** (created automatically on first run) so you can see what was chosen
+2. Creates a fresh NotebookLM notebook with the same videos as sources
+
+No API key, no extra config — if you've already done `npm start` once and signed in, this just works.
 
 ## What you get
 
