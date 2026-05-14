@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "node pull.mjs",
+    "start": "node --env-file=.env pull.mjs",
     "topic": "node topic.mjs",
     "postinstall": "playwright install chromium"
   },

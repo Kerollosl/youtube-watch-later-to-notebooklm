@@ -3,10 +3,12 @@
 // Usage:
 //   node topic.mjs "pidgeon migration patterns"
 //   node topic.mjs "pidgeon migration patterns" --max=30
+//   node topic.mjs "pidgeon migration patterns" --include-playlist
 //   npm run topic -- "pidgeon migration patterns"
 //
 // First run opens Chrome and waits for you to sign into Google in the visible
 // window. Session persists in ./.user-data/ for re-runs.
+// By default, YouTube playlist saving is skipped for speed.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,7 +22,7 @@ const RESEARCH_PLAYLIST_NAME = 'Claude Research';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function parseArgs(argv) {
-    const args = { topic: null, max: 50, skipPlaylist: false };
+    const args = { topic: null, max: 50, skipPlaylist: true };
     const rest = [];
     for (const a of argv.slice(2)) {
         const m = a.match(/^--max=(\d+)$/);
@@ -30,6 +32,10 @@ function parseArgs(argv) {
         }
         if (a === '--skip-playlist') {
             args.skipPlaylist = true;
+            continue;
+        }
+        if (a === '--include-playlist') {
+            args.skipPlaylist = false;
             continue;
         }
         if (a === '--help' || a === '-h') {
@@ -54,9 +60,9 @@ async function main() {
     const args = parseArgs(process.argv);
 
     if (args.help || !args.topic) {
-        console.log('Usage: node topic.mjs "<topic>" [--max=N] [--skip-playlist]');
-        console.log('  --max=N         Max videos in the notebook (default 50, NotebookLM cap)');
-        console.log('  --skip-playlist Skip saving videos to YouTube playlist (faster, default: save)');
+        console.log('Usage: node topic.mjs "<topic>" [--max=N] [--include-playlist]');
+        console.log('  --max=N            Max videos in the notebook (default 50, NotebookLM cap)');
+        console.log('  --include-playlist Save videos to YouTube playlist (default: skip for speed)');
         process.exit(args.help ? 0 : 1);
     }
 

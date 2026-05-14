@@ -77,6 +77,37 @@ async function scrapeWatchLater(page) {
     return dedup;
 }
 
+async function createTodoistTask(notebookUrls) {
+    const token = process.env.TODOIST_API_KEY;
+    if (!token) {
+        log('Warning: TODOIST_API_KEY not set, skipping Todoist task creation.');
+        return;
+    }
+
+    const notebookLines = notebookUrls.map((u) => `NotebookLM: ${u}`).join('\n');
+    const description = `${notebookLines}\n\nWatch Later: https://www.youtube.com/playlist?list=WL`;
+
+    const res = await fetch('https://api.todoist.com/api/v1/tasks', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            content: 'YT Watch Later NotebookLM',
+            description,
+        }),
+    });
+
+    if (!res.ok) {
+        log(`Warning: Todoist task creation failed (${res.status})`);
+        return;
+    }
+
+    const task = await res.json();
+    log(`Todoist task created: ${task.url}`);
+}
+
 async function main() {
     const { ctx, page } = await launchBrowser();
     try {
@@ -96,6 +127,8 @@ async function main() {
         log('\n=== Done ===');
         log(`Notebooks created: ${result.notebooks.length}`);
         for (const n of result.notebooks) log(`  ${n.url}`);
+
+        await createTodoistTask(result.notebooks.map((n) => n.url));
     } finally {
         await ctx.close().catch(() => {});
     }
