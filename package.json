@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --env-file=.env pull.mjs",
     "topic": "node topic.mjs",
-    "postinstall": "playwright install chromium"
+    "test": "node --test tests/*.test.mjs",
+    "setup:browser": "playwright install chromium"
   },
   "dependencies": {
     "playwright": "^1.47.0"

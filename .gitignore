@@ -24,3 +24,9 @@ playwright-report/
 .ipynb_checkpoints/
 .idea/
 .DS_Store
+
+.user-data/
+.imdb-user-data/
+cookies.json
+notebook-progress.json
+notebooks-created.log

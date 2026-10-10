@@ -10,3 +10,8 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
+      - name: Source identity browser fixtures
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium
+          npm test

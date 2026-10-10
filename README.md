@@ -104,4 +104,6 @@ MIT — your videos, your notebooks, your data.
 
 ## Cleanup behavior and validation limits
 
-Exports use bounded scrolling and cannot guarantee complete Watch Later enumeration from stable DOM counts. Notebook batches have a durable resume ledger and source identities must be verified before success. Processing timeout or missing identities fails explicitly. Configure the optional summary helper with NOTEBOOKLM_SUMMARY_DIR; summary subprocesses have bounded runtime.
+Exports use bounded scrolling and cannot guarantee complete Watch Later enumeration from stable DOM counts. Notebook batches have a durable resume ledger and source identities must be verified before success. Processing timeout or missing identities fails explicitly. Configure the optional summary helper with NOTEBOOKLM_SKILL_DIR; summary subprocesses have bounded runtime.
+
+Install with `npm ci`; run `npm run setup:browser` once before a live browser session. Unit/fixture checks do not operate on your accounts.
