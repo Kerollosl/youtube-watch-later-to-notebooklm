@@ -30,12 +30,17 @@ async function scrapeWatchLater(page) {
         timeout: NAV_TIMEOUT,
     });
 
-    await page.locator('ytd-playlist-video-renderer').first().waitFor({ state: 'visible', timeout: ACTION_TIMEOUT });
+    try { await page.locator('ytd-playlist-video-renderer').first().waitFor({ state: 'visible', timeout: ACTION_TIMEOUT }); }
+    catch(error){
+        if(await page.getByText(/no videos|empty playlist/i).first().isVisible().catch(()=>false))return [];
+        throw Error('Watch Later could not be enumerated; confirm login and page compatibility');
+    }
 
     let prev = -1;
     let count = await page.locator('ytd-playlist-video-renderer').count();
     let stableTicks = 0;
-    while (stableTicks < 3) {
+    let scrolls=0;
+    while (stableTicks < 3 && ++scrolls <= 200) {
         prev = count;
         await page.keyboard.press('End');
         await page.waitForTimeout(1500);
@@ -45,6 +50,7 @@ async function scrapeWatchLater(page) {
         else stableTicks = 0;
     }
 
+    if(scrolls>200)throw Error("Playlist enumeration exceeded its bound; export not declared complete");
     const videos = await page.$$eval('ytd-playlist-video-renderer', (els) =>
         els
             .map((e) => {
@@ -138,3 +144,4 @@ main().catch((err) => {
     console.error('Fatal:', err);
     process.exit(1);
 });
+
