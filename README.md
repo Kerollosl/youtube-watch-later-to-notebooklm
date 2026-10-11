@@ -1,6 +1,6 @@
 # youtube-watch-later-to-notebooklm
 
-Two ways to feed YouTube videos into a fresh [NotebookLM](https://notebooklm.google.com/) notebook:
+Two ways to feed YouTube videos into a fresh [NotebookLM](https://notebook.google.com/) notebook:
 
 1. **Watch Later → NotebookLM** (`npm start`) — scrape your YouTube Watch Later, load every video as a NotebookLM source.
 2. **Topic search → NotebookLM** (`npm run topic -- "<topic>"`) — search YouTube for a topic, pick the best ~50 videos, load them as NotebookLM sources. No YouTube playlist involved.
@@ -68,7 +68,7 @@ Per run, the script creates:
 |------|----------|
 | `watch-later-<TS>.json` | Every video extracted from your Watch Later (id, title, channel, URL, duration) |
 | `notebooks-created.log` | Append-only log of every notebook created with timestamps and URLs |
-| One or more NotebookLM notebooks | Visible at https://notebooklm.google.com/ — named `youtube watch later pull <TS>` |
+| One or more NotebookLM notebooks | Visible at https://notebook.google.com/ — named `youtube watch later pull <TS>` |
 | `summary-<TS>.md` (optional) | NotebookLM's summary of every source — only generated if the optional [notebooklm skill](https://github.com/anthropics/skills) is installed locally |
 
 ## Optional: AI summary step

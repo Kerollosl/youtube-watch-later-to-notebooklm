@@ -3,6 +3,7 @@ node_modules/
 .env
 watch-later-*.json
 topic-*.json
+channel-*.json
 summary-*.md
 notebooks-created.log
 progress.json
